@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { IProject } from '$lib/models/project.model';
 	import type { Selected } from 'bits-ui';
 	import { onMount } from 'svelte';
 	import {
@@ -12,21 +11,21 @@
 	} from './ui/select';
 
 	export let selected: Selected<unknown>[];
-	let projects: IProject[];
+	let issues: string[] = ['Task', 'Bug', 'Story'];
 	const getData = async () => {
-		const res = await fetch('/api/v1/list/projects');
-		projects = await res.json();
+		const res = await fetch('/api/v1/list/issue-types');
+		issues = await res.json();
 	};
 	onMount(getData);
 </script>
 
 <Select multiple bind:selected>
 	<SelectTrigger>
-		<SelectValue placeholder="Select a report" />
+		<SelectValue placeholder="Select tasks" />
 	</SelectTrigger>
-	<SelectContent>
-		{#each projects as project}
-			<SelectItem value={project.key} label={project.name}>{project.name}</SelectItem>
+	<SelectContent class="max-h-96 overflow-auto">
+		{#each issues as issue}
+			<SelectItem value={issue} label={issue}>{issue}</SelectItem>
 		{/each}
 	</SelectContent>
 	<SelectInput name="report" />
