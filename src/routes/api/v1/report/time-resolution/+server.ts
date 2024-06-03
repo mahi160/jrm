@@ -8,6 +8,7 @@ export async function GET(event) {
 	const days = Number(event.url.searchParams.get('days')) || 14;
 	const task = event.url.searchParams.get('task')?.split(',').join(', ') || 'Task, Bug, Story';
 	const jql = `project in (${key}) AND issuetype in (${task}) AND resolution = Done AND resolutiondate >= -${days}d`;
+	console.log(jql);
 
 	try {
 		const issues = await jc.issueSearch.searchForIssuesUsingJql({
