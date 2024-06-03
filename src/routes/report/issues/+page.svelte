@@ -1,7 +1,9 @@
 <script lang="ts">
 	import DownloadCsv from '$lib/components/DownloadCsv.svelte';
+	import ProjectSelector from '$lib/components/ProjectSelector.svelte';
 	import BarChart from '$lib/components/charts/BarChart.svelte';
 	import { Button } from '$lib/components/ui/button';
+	import Input from '$lib/components/ui/input/input.svelte';
 	import {
 		Select,
 		SelectContent,
@@ -29,6 +31,8 @@
 			</SelectContent>
 			<SelectInput name="report" />
 		</Select>
+		<ProjectSelector />
+		<Input type="number" placeholder="Days" value={14} />
 		<Button variant="default">Generate Report</Button>
 		<DownloadCsv jsonData={reports}></DownloadCsv>
 	</div>
