@@ -4,12 +4,18 @@
 	import CardHeader from '$lib/components/ui/card/card-header.svelte';
 	import Card from '$lib/components/ui/card/card.svelte';
 	import * as Table from '$lib/components/ui/table/index.js';
+	import type { IIssue } from '$lib/models/issue.model';
+	import type { ChartData } from 'chart.js/auto';
 	import dayjs from 'dayjs';
 
-	export let data;
+	let { rawData }: { rawData: IIssue[] } = $props();
+	let chartData: ChartData<'bar'> = $derived({
+		labels: rawData?.map((r) => r.id),
+		datasets: [{ data: rawData?.map((r) => r.days) }]
+	});
 </script>
 
-<BarChart {data} key={{ x: 'id', y: 'days' }} />
+<BarChart {chartData} />
 
 <Card class="max-h-[50vh] overflow-auto">
 	<CardHeader>List of data</CardHeader>
@@ -27,7 +33,7 @@
 				</Table.Row>
 			</Table.Header>
 			<Table.Body>
-				{#each data as item, i (i)}
+				{#each rawData as item, i (i)}
 					<Table.Row>
 						<Table.Cell class="font-medium">
 							<a class="min-w-24 text-primary" href={item.url} target="_blank">

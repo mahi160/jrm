@@ -12,23 +12,27 @@
 		SelectTrigger,
 		SelectValue
 	} from '$lib/components/ui/select';
+	import type { IIssue } from '$lib/models/issue.model';
 	import { getLocalTimeZone, today } from '@internationalized/date';
 	import type { Selected } from 'bits-ui';
+	import IssueByDate from './mods/issue-by-date.svelte';
 	import TimeResolution from './mods/time-resolution.svelte';
 
-	const reports = [{ title: 'Time Resolution Report', value: 'time-resolution' }];
+	const reports = [
+		{ title: 'Time Resolution Report', value: 'time-resolution' },
+		{ title: 'Created vs Resolved', value: 'issues-with-date' }
+	];
 	let report: Selected<unknown>;
 	let project: Selected<unknown>[];
 	let tasks: Selected<unknown>[];
-
-	let chartData: any;
 	const start = today(getLocalTimeZone());
 	const end = start.add({ days: 14 });
-
 	let value = {
 		start,
 		end
 	};
+
+	let rawData: IIssue[];
 
 	const generateReport = async () => {
 		const r = report.value;
@@ -38,11 +42,11 @@
 		const url = `/api/v1/report/${r}?key=${keys}&days=${days}&tasks=${t}`;
 		const res = await fetch(url);
 
-		chartData = await res.json();
-		console.log(chartData);
+		rawData = await res.json();
 	};
 </script>
 
+{value.start}, {value.end}
 <div class="container mx-auto grid gap-10 p-4">
 	<h1 class="text-3xl text-neutral-700 underline">Reports on issue</h1>
 
@@ -64,14 +68,18 @@
 
 		<!-- <Input type="number" placeholder="Days" bind:value={days} /> -->
 		<!-- <RangeCalendar bind:value class="rounded-md border" /> -->
-		<DatePicker {value} on:cha />
-		<Button variant="default" on:click={generateReport} disabled={!(report && project && tasks)}
-			>Generate Report</Button
-		>
+		<DatePicker {value} />
+		<Button variant="default" on:click={generateReport} disabled={!(report && project && tasks)}>
+			Generate Report
+		</Button>
 		<DownloadCsv jsonData={reports}></DownloadCsv>
 	</div>
 
 	{#if report?.value && report.value === 'time-resolution'}
-		<TimeResolution data={chartData} />
+		<TimeResolution {rawData} />
+	{/if}
+
+	{#if report?.value && report.value === 'issues-with-date'}
+		<IssueByDate {rawData} />
 	{/if}
 </div>
