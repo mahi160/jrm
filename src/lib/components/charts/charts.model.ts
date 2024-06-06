@@ -1,8 +1,8 @@
-export interface IBarChartData {
-	name: string;
-	value: number;
-}
+import type { ChartData, ChartOptions } from 'chart.js/auto';
 
-export interface IBarChartProps {
-	data: IBarChartData[];
+export interface IBarChart {
+	data: ChartData<'bar'>;
+	options?: ChartOptions<'bar'>;
+	height?: number;
+	width?: number;
 }

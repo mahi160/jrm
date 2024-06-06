@@ -5,17 +5,29 @@
 	import Card from '$lib/components/ui/card/card.svelte';
 	import * as Table from '$lib/components/ui/table/index.js';
 	import type { IIssue } from '$lib/models/issue.model';
-	import type { ChartData } from 'chart.js/auto';
+	import { daysToText } from '$lib/utils';
+	import type { ChartData, ChartOptions } from 'chart.js/auto';
 	import dayjs from 'dayjs';
 
 	let { rawData }: { rawData: IIssue[] } = $props();
 	let chartData: ChartData<'bar'> = $derived({
 		labels: rawData?.map((r) => r.id),
-		datasets: [{ data: rawData?.map((r) => r.days) }]
+		datasets: [{ data: rawData?.map((r) => r.days), label: 'Time Taken to resolve' }]
 	});
+	let options: ChartOptions<'bar'> = {
+		plugins: {
+			tooltip: {
+				callbacks: {
+					label: (x) => {
+						return daysToText(Number(x.formattedValue));
+					}
+				}
+			}
+		}
+	};
 </script>
 
-<BarChart {chartData} />
+<BarChart data={chartData} height={400} {options} />
 
 <Card class="max-h-[50vh] overflow-auto">
 	<CardHeader>List of data</CardHeader>

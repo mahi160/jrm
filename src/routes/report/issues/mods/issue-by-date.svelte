@@ -17,16 +17,17 @@
 			temp[created].created++;
 			updated && temp[updated].updated++;
 		});
+		const dates = Object.keys(temp);
 		return {
-			labels: Object.keys(temp).sort(),
+			labels: dates.map((date) => dayjs(date).format('MMM DD')),
 			datasets: [
 				{
-					label: 'Created',
-					data: Object.values(temp).map((item) => item.created)
+					label: 'Resolved',
+					data: dates.map((item) => temp[item].created)
 				},
 				{
-					label: 'Updated',
-					data: Object.values(temp).map((item) => item.updated)
+					label: 'Created',
+					data: dates.map((item) => temp[item].updated)
 				}
 			]
 		};
@@ -35,4 +36,4 @@
 	const chartData: ChartData<'bar'> = $derived(orgData(rawData));
 </script>
 
-<BarChart {chartData} />
+<BarChart data={chartData} height={600} />

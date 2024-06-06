@@ -1,31 +1,23 @@
 <script lang="ts">
-	import { daysToText } from '$lib/utils';
 	import {
 		Chart,
 		type ChartConfiguration,
-		type ChartData,
 		type ChartOptions,
 		type Chart as IChart
 	} from 'chart.js/auto';
 	import { Card } from '../ui/card';
 	import CardContent from '../ui/card/card-content.svelte';
+	import type { IBarChart } from './charts.model';
 
-	let { chartData }: { chartData: ChartData<'bar'> } = $props();
+	let { data, height, width, options }: IBarChart = $props();
 	let chartRef: HTMLCanvasElement;
 	let chart: IChart;
-	const options: ChartOptions<'bar'> = {
+	let defaultOptions: ChartOptions<'bar'> = {
 		responsive: true,
 		maintainAspectRatio: false,
 		plugins: {
 			legend: {
 				display: true
-			},
-			tooltip: {
-				callbacks: {
-					label: (x) => {
-						return daysToText(Number(x.formattedValue));
-					}
-				}
 			}
 		}
 	};
@@ -33,15 +25,18 @@
 	const createChart = () => {
 		const ctx = chartRef.getContext('2d');
 		if (!ctx) return;
+		if (!data) return;
+
+		if (options) defaultOptions = { ...defaultOptions, ...options };
 		const config: ChartConfiguration<'bar'> = {
-			data: chartData,
-			options,
+			data,
+			options: defaultOptions,
 			type: 'bar'
 		};
 		chart = new Chart(ctx, config);
 	};
 	$effect(() => {
-		if (!!chartData) {
+		if (!!data) {
 			chart?.destroy();
 			createChart();
 		}
@@ -50,6 +45,6 @@
 
 <Card>
 	<CardContent>
-		<canvas height="480" bind:this={chartRef}></canvas>
+		<canvas {height} {width} bind:this={chartRef}></canvas>
 	</CardContent>
 </Card>
