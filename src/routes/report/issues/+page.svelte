@@ -72,7 +72,7 @@
 		<Button variant="default" on:click={generateReport} disabled={!(report && project && tasks)}>
 			Generate Report
 		</Button>
-		<DownloadCsv jsonData={reports}></DownloadCsv>
+		<DownloadCsv data={rawData}></DownloadCsv>
 	</div>
 
 	{#if report?.value && report.value === 'time-resolution'}

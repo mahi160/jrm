@@ -26,7 +26,6 @@ export async function GET(event) {
 		console.log(`Found ${issues.total} issues.`);
 		const result = issues.issues?.map((issue) => ({
 			key: issue.key,
-			url: `${process.env.JIRA_URL}/browse/${issue.key}`,
 			title: issue.fields.summary,
 			assignee: issue.fields.assignee?.displayName,
 			status: issue.fields.status.name,
