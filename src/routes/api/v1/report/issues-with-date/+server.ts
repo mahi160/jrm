@@ -20,16 +20,19 @@ export async function GET(event) {
 			maxResults: 1000
 		});
 		console.log(`Found ${issues.total} issues.`);
-
-		const result: { [key: string]: { created: number; resolution: number } } = {};
-		issues.issues?.forEach((issue) => {
-			const c = dayjs(issue.fields.created).format('YYYY-MM-DD');
-			const r = issue.fields.resolutiondate
-				? dayjs(issue.fields.resolutiondate).format('YYYY-MM-DD')
-				: null;
-			result[`${c}`].created = result[`${c}`]?.created + 1 || 1;
-			if (r) result[`${r}`].resolution = result[`${r}`]?.resolution + 1 || 1;
-		});
+		const result =
+			issues.issues?.map((issue) => ({
+				key: issue.key,
+				url: `${process.env.JIRA_URL}/browse/${issue.key}`,
+				title: issue.fields.summary,
+				assignee: issue.fields.assignee?.displayName,
+				status: issue.fields.status.name,
+				priority: issue.fields.priority?.name,
+				updated: issue.fields.resolutiondate
+					? dayjs(issue.fields.resolutiondate).format('YYYY-MM-DD')
+					: null,
+				created: dayjs(issue.fields.created).format('YYYY-MM-DD')
+			})) || [];
 
 		return json(result);
 	} catch {
