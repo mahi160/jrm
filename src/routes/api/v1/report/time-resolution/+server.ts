@@ -5,9 +5,10 @@ import dayjs from 'dayjs';
 const host = process.env.SERVER_URL || '';
 export async function GET(event) {
 	const key = event.url.searchParams.get('key')?.split(',').join(', ');
-	const days = Number(event.url.searchParams.get('days')) || 14;
+	const start = event.url.searchParams.get('start');
+	const end = event.url.searchParams.get('end');
 	const task = event.url.searchParams.get('task')?.split(',').join(', ') || 'Task, Bug, Story';
-	const jql = `project in (${key}) AND issuetype in (${task}) AND resolution = Done AND resolutiondate >= -${days}d`;
+	const jql = `project in (${key}) AND issuetype in (${task}) AND resolution = Done AND (resolutiondate >= ${start} AND resolutiondate <= ${end})`;
 	console.log(jql);
 
 	try {

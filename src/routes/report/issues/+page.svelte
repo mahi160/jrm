@@ -15,6 +15,7 @@
 	import type { IIssue } from '$lib/models/issue.model';
 	import { getLocalTimeZone, today } from '@internationalized/date';
 	import type { Selected } from 'bits-ui';
+	import dayjs from 'dayjs';
 	import IssueByDate from './mods/issue-by-date.svelte';
 	import TimeResolution from './mods/time-resolution.svelte';
 
@@ -38,8 +39,10 @@
 		const r = report.value;
 		const keys = project.map((p) => p.value).toString();
 		const t = tasks.map((x) => x.value).toString();
+		const start = dayjs(value.start.toString()).format('YYYY-MM-DD');
+		const end = dayjs(value.end.toString()).format('YYYY-MM-DD');
 		const days = value.end.compare(value.start);
-		const url = `/api/v1/report/${r}?key=${keys}&days=${days}&tasks=${t}`;
+		const url = `/api/v1/report/${r}?key=${keys}&start=${start}&end=${end}&tasks=${t}&days=${days}`;
 		const res = await fetch(url);
 
 		rawData = await res.json();
