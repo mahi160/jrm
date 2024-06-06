@@ -49,7 +49,6 @@
 	};
 </script>
 
-{value.start}, {value.end}
 <div class="container mx-auto grid gap-10 p-4">
 	<h1 class="text-3xl text-neutral-700 underline">Reports on issue</h1>
 

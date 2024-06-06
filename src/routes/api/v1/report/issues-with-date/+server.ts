@@ -4,9 +4,9 @@ import dayjs from 'dayjs';
 import type { RequestEvent } from './$types.js';
 
 const getJql = (event: RequestEvent) => {
-	const key = event.url.searchParams.get('key')?.split(',').join(', ');
 	const start = event.url.searchParams.get('start');
 	const end = event.url.searchParams.get('end');
+	const key = event.url.searchParams.get('key')?.split(',').join(', ');
 
 	const task = event.url.searchParams.get('task')?.split(',').join(', ') || 'Task, Bug, Story';
 	return `project in (${key}) AND issuetype in (${task}) AND (created >= ${start} AND created <= ${end}) OR (resolutiondate >= ${start} AND resolutiondate <= ${end})`;
@@ -24,22 +24,16 @@ export async function GET(event) {
 			maxResults: 1000
 		});
 		console.log(`Found ${issues.total} issues.`);
-		const result = issues.issues
-			?.map((issue) => ({
-				key: issue.key,
-				url: `${process.env.JIRA_URL}/browse/${issue.key}`,
-				title: issue.fields.summary,
-				assignee: issue.fields.assignee?.displayName,
-				status: issue.fields.status.name,
-				priority: issue.fields.priority?.name,
-				updated: issue.fields.resolutiondate ? issue.fields.resolutiondate : null,
-				created: issue.fields.created
-			}))
-			.filter(
-				(issue) =>
-					dayjs(issue.created).isAfter(dayjs(start), 'day') &&
-					dayjs(issue.created).isBefore(dayjs(end), 'day')
-			);
+		const result = issues.issues?.map((issue) => ({
+			key: issue.key,
+			url: `${process.env.JIRA_URL}/browse/${issue.key}`,
+			title: issue.fields.summary,
+			assignee: issue.fields.assignee?.displayName,
+			status: issue.fields.status.name,
+			priority: issue.fields.priority?.name,
+			updated: checkDate(issue.fields.resolutiondate, end, start) ? issue.fields.updated : null,
+			created: checkDate(issue.fields.created, end, start) ? issue.fields.created : null
+		}));
 
 		return json(result);
 	} catch {
@@ -47,3 +41,5 @@ export async function GET(event) {
 		return json({ msg: 'Could not find project.', jql, success: false });
 	}
 }
+const checkDate = (date: string | null, end: string | null, start: string | null) =>
+	!!(date && dayjs(date).isAfter(dayjs(start), 'day') && dayjs(date).isBefore(dayjs(end), 'day'));
