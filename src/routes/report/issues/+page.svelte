@@ -66,9 +66,7 @@
 
 		<IssueType bind:selected={tasks} />
 
-		<!-- <Input type="number" placeholder="Days" bind:value={days} /> -->
-		<!-- <RangeCalendar bind:value class="rounded-md border" /> -->
-		<DatePicker {value} />
+		<DatePicker bind:value />
 		<Button variant="default" on:click={generateReport} disabled={!(report && project && tasks)}>
 			Generate Report
 		</Button>
