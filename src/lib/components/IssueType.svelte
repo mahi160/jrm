@@ -21,7 +21,7 @@
 
 <Select multiple bind:selected>
 	<SelectTrigger>
-		<SelectValue placeholder="Select tasks" />
+		<SelectValue placeholder="Select Issue Type" />
 	</SelectTrigger>
 	<SelectContent class="max-h-96 overflow-auto">
 		{#each issues as issue}
