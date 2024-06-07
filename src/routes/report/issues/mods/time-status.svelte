@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Switch from '$lib/components/ui/switch/switch.svelte';
+	import IssueByIssue from './time-status/issue-by-issue.svelte';
 	import Overall from './time-status/overall.svelte';
 
 	let { rawData }: any = $props();
@@ -14,5 +15,5 @@
 {#if showOverall}
 	<Overall {rawData} />
 {:else}
-	<p>Coming soon</p>
+	<IssueByIssue {rawData} />
 {/if}

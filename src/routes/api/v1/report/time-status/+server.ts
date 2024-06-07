@@ -1,5 +1,6 @@
 import { jc } from '$lib/server/jiraClient';
 import { json, type RequestHandler } from '@sveltejs/kit';
+const host = process.env.SERVER_URL || '';
 
 export const GET: RequestHandler = async (event) => {
 	try {
@@ -39,7 +40,8 @@ export const GET: RequestHandler = async (event) => {
 						timestamp: history['created'],
 						from: item['fromString'],
 						to: item['toString'],
-						issueType: issue.fields.issuetype?.name
+						issueType: issue.fields.issuetype?.name,
+						url: `${host}/browse/${issue.key}`
 					}));
 			});
 		});
