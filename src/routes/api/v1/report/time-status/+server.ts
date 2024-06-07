@@ -1,5 +1,6 @@
 import { jc } from '$lib/server/jiraClient';
 import { json, type RequestHandler } from '@sveltejs/kit';
+import dayjs from 'dayjs';
 const host = process.env.SERVER_URL || '';
 
 export const GET: RequestHandler = async (event) => {
@@ -45,10 +46,33 @@ export const GET: RequestHandler = async (event) => {
 					}));
 			});
 		});
-
-		return json(log);
+		const filteredLog = log.map((entry) => ({
+			...entry,
+			workingTimeInSeconds: calculateWorkingTime(entry.timestamp)
+		}));
+		return json(filteredLog);
 	} catch (error) {
 		console.error('Error fetching issues:', error);
 		return json({ msg: 'Could not find project.', success: false });
 	}
 };
+
+const WORKING_HOURS_START = 9; // 9 AM
+const WORKING_HOURS_END = 17; // 5 PM
+const WORKING_DAYS = [1, 2, 3, 4, 5]; // Monday to Friday
+function calculateWorkingTime(timestamp?: string) {
+	const date = dayjs(timestamp);
+	const day = date.day();
+	const hour = date.hour();
+
+	if (!WORKING_DAYS.includes(day) || hour < WORKING_HOURS_START || hour >= WORKING_HOURS_END) {
+		return 0;
+	}
+
+	const startOfWork = date.startOf('day').add(WORKING_HOURS_START, 'hour');
+	const endOfWork = date.startOf('day').add(WORKING_HOURS_END, 'hour');
+
+	const workingTime =
+		Math.min(endOfWork.unix(), date.unix()) - Math.max(startOfWork.unix(), date.unix());
+	return workingTime > 0 ? workingTime : 0;
+}

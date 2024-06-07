@@ -156,3 +156,17 @@ function formatDuration(duration: {
 		.join(' ')
 		.trim();
 }
+export function countWeekends(startDate: string, endDate: string) {
+	const start = dayjs(startDate);
+	const end = dayjs(endDate);
+	let count = 0;
+
+	for (let date = start; date.isBefore(end) || date.isSame(end, 'day'); date = date.add(1, 'day')) {
+		if (date.day() === 0 || date.day() === 6) {
+			// 0 is Sunday, 6 is Saturday
+			count++;
+		}
+	}
+
+	return count;
+}
