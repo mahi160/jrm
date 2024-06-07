@@ -18,10 +18,12 @@
 	import dayjs from 'dayjs';
 	import IssueByDate from './mods/issue-by-date.svelte';
 	import TimeResolution from './mods/time-resolution.svelte';
+	import TimeStatus from './mods/time-status.svelte';
 
 	const reports = [
 		{ title: 'Time Resolution Report', value: 'time-resolution' },
-		{ title: 'Created vs Resolved', value: 'issues-with-date' }
+		{ title: 'Created vs Resolved', value: 'issues-with-date' },
+		{ title: 'Time Status', value: 'time-status' }
 	];
 	let report: Selected<unknown>;
 	let project: Selected<unknown>[];
@@ -42,7 +44,7 @@
 		const start = dayjs(value.start.toString()).format('YYYY-MM-DD');
 		const end = dayjs(value.end.toString()).format('YYYY-MM-DD');
 		const days = value.end.compare(value.start);
-		const url = `/api/v1/report/${r}?key=${keys}&start=${start}&end=${end}&tasks=${t}&days=${days}`;
+		const url = `/api/v1/report/${r}?key=${keys}&start=${start}&end=${end}&task=${t}&days=${days}`;
 		const res = await fetch(url);
 
 		rawData = await res.json();
@@ -81,5 +83,8 @@
 
 	{#if report?.value && report.value === 'issues-with-date'}
 		<IssueByDate {rawData} />
+	{/if}
+	{#if report?.value && report.value === 'time-status'}
+		<TimeStatus {rawData} />
 	{/if}
 </div>

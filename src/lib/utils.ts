@@ -95,3 +95,64 @@ export function daysToText(days: number) {
 
 	return text;
 }
+
+export function secondsToYMDHMS(seconds: number): string {
+	seconds = Math.abs(seconds);
+	// Approximate values for the duration of each time unit in seconds
+	const yearSeconds = 365.25 * 24 * 60 * 60;
+	const monthSeconds = 30.44 * 24 * 60 * 60;
+	const daySeconds = 24 * 60 * 60;
+	const hourSeconds = 60 * 60;
+	const minuteSeconds = 60;
+
+	// Calculate the number of each time unit
+	const years = Math.floor(seconds / yearSeconds);
+	seconds %= yearSeconds;
+
+	const months = Math.floor(seconds / monthSeconds);
+	seconds %= monthSeconds;
+
+	const days = Math.floor(seconds / daySeconds);
+	seconds %= daySeconds;
+
+	const hours = Math.floor(seconds / hourSeconds);
+	seconds %= hourSeconds;
+
+	const minutes = Math.floor(seconds / minuteSeconds);
+	seconds %= minuteSeconds;
+
+	return formatDuration({
+		years: years,
+		months: months,
+		days: days,
+		hours: hours,
+		minutes: minutes,
+		seconds: Math.floor(seconds)
+	});
+}
+
+function formatDuration(duration: {
+	years: number;
+	months: number;
+	days: number;
+	hours: number;
+	minutes: number;
+	seconds: number;
+}): string {
+	const { years, months, days, hours, minutes, seconds } = duration;
+
+	const parts = [
+		years > 0 ? `${years}y` : '',
+		months > 0 ? `${months}m` : '',
+		days > 0 ? `${days}d` : '',
+		hours > 0 ? `${hours}h` : '',
+		minutes > 0 ? `${minutes}m` : '',
+		seconds > 0 ? `${seconds}s` : ''
+	];
+
+	// Filter out empty parts and join with a space
+	return parts
+		.filter((part) => part !== '')
+		.join(' ')
+		.trim();
+}

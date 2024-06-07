@@ -10,10 +10,12 @@
 	import dayjs from 'dayjs';
 
 	let { rawData }: { rawData: IIssue[] } = $props();
-	let chartData: ChartData<'bar'> = $derived({
-		labels: rawData?.map((r) => r.id),
-		datasets: [{ data: rawData?.map((r) => r.days), label: 'Time Taken to resolve' }]
-	});
+	let chartData: ChartData<'bar'> = $derived(
+		rawData && {
+			labels: rawData?.map((r) => r.id),
+			datasets: [{ data: rawData?.map((r) => r.days), label: 'Time Taken to resolve' }]
+		}
+	);
 	let options: ChartOptions<'bar'> = {
 		plugins: {
 			tooltip: {
