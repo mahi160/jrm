@@ -28,8 +28,8 @@
 	let report: Selected<unknown>;
 	let project: Selected<unknown>[];
 	let tasks: Selected<unknown>[];
-	const start = today(getLocalTimeZone());
-	const end = start.add({ days: 14 });
+	const end = today(getLocalTimeZone());
+	const start = end.subtract({ days: 14 });
 	let value = {
 		start,
 		end
