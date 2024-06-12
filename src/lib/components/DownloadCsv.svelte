@@ -5,16 +5,17 @@
 
 	export let data: unknown[];
 	const downloadCSVData = () => {
+		if (!data) return;
 		const csv = papa.unparse(data);
 
 		const anchor = document.createElement('a');
 		anchor.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
 		anchor.target = '_blank';
-		anchor.download = 'nameYourFileHere.csv';
+		anchor.download = 'report.csv';
 		anchor.click();
 	};
 </script>
 
-<Button variant="outline" on:click={downloadCSVData}>
+<Button variant="secondary" disabled={!data} on:click={downloadCSVData}>
 	<Download />
 </Button>

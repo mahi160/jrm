@@ -10,8 +10,8 @@
 		dateStyle: 'long'
 	});
 
-	const start = today(getLocalTimeZone());
-	const end = start.add({ days: 7 });
+	const end = today(getLocalTimeZone());
+	const start = end.subtract({ days: 7 });
 
 	export let value = {
 		start,
