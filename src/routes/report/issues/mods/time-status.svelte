@@ -12,7 +12,6 @@
 	<Switch bind:checked={showOverall} />
 	<span class:text-gray-300={showOverall}>Show overall</span>
 </div>
-{JSON.stringify(rawData)}
 {#if showOverall}
 	<Overall {rawData} />
 {:else}

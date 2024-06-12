@@ -14,7 +14,7 @@ export const GET: RequestHandler = async (event) => {
 			return json({ msg: 'Missing required query parameters.', success: false });
 		}
 
-		const jql = `project in (${key}) AND issuetype in (${task}) AND (updated >= ${start} AND updated <= ${end})`;
+		const jql = `project in (${key}) AND issuetype in (${task}) AND (updated >= "${start}" AND updated <= "${end}") OR (resolutiondate >= "${start}" AND resolutiondate <= "${end}") OR (created >= "${start}" AND created <= "${end}")`;
 		console.log(jql);
 
 		const issuesResponse = await jc.issueSearch.searchForIssuesUsingJql({
